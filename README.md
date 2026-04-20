@@ -78,11 +78,11 @@ argmax outputs.
 
 ```
 $ python rc3_ofi_linear_argmax.py
-PyTorch version: 2.11.0+cu128
-argmax mismatches (eager vs ofi): 140 / 1204
-eager unique vals : [0, 1, 2, 3]
-ofi   unique vals : [0, 1]
-
-BUG CONFIRMED: optimize_for_inference gives wrong argmax (140 mismatches)
-Root cause: linear→matmul+add decomposition + argmax sensitivity to near-equal values
+mismatched positions (batch, feature) -> eager / jit:
+  [ 0, 32]  eager=3  jit=1
+  [ 0, 33]  eager=3  jit=0
+  [ 0, 34]  eager=1  jit=0
+  [ 0, 35]  eager=3  jit=0
+  [ 0, 39]  eager=2  jit=0
+total: 140 / 1204
 ```
