@@ -24,6 +24,9 @@ opt = torch.jit.optimize_for_inference(torch.jit.freeze(torch.jit.trace(net, [x]
 with torch.no_grad():
     jit = opt(x)
 
-print(f"eager: {eager.flatten()[:10].tolist()}")
-print(f"jit:   {jit.flatten()[:10].tolist()}")
-print(f"mismatches: {(eager != jit).sum().item()} / {eager.numel()}")
+mask = eager != jit
+rows, cols = mask.nonzero(as_tuple=True)
+print("mismatched positions (batch, feature) -> eager / jit:")
+for r, c in zip(rows[:5], cols[:5]):
+    print(f"  [{r.item():2d}, {c.item():2d}]  eager={eager[r,c].item()}  jit={jit[r,c].item()}")
+print(f"total: {mask.sum().item()} / {eager.numel()}")
